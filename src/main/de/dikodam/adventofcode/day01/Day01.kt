@@ -1,13 +1,21 @@
 package main.de.dikodam.adventofcode.day01
 
 fun main() {
-    val totalFuel = getInput()
+    val preppedInput = day01input
         .map { it.toInt() }
+
+
+    val task1fuel = preppedInput
+        .map { computeFuelForMass(it) }
+        .sum()
+
+    val task2fuel = preppedInput
         .map { computeFuelForMass(it) }
         .map { it + computeFuelForFuel(it) }
         .sum()
 
-    println("total fuel: ${totalFuel}")
+    println("Task 1 fuel: $task1fuel")
+    println("Task 2 fuel: $task2fuel")
 }
 
 fun computeFuelForMass(mass: Int): Int = mass / 3 - 2
