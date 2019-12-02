@@ -1,4 +1,4 @@
-package main.de.dikodam.adventofcode.day01
+package de.dikodam.adventofcode2019.day01
 
 fun main() {
     val preppedInput = day01input
