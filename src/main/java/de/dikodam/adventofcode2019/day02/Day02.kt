@@ -1,8 +1,8 @@
 package de.dikodam.adventofcode2019.day02
 
 
-// OPcode 1 a b c: take values from index a and b, add them, store at index c
-// OPcode 2 a b c: take values from index a and b, multiply them, store at index c
+// OPcode 1 a b c: take values from index a and b, add them, store at index 'value of index c'
+// OPcode 2 a b c: take values from index a and b, multiply them, store at index 'value of index c'
 // OPcode 99     : terminate
 // any other     : error
 
