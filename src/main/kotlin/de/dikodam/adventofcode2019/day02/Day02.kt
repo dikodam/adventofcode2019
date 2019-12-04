@@ -13,7 +13,8 @@ fun main() {
 
     println("Task 1: ${runIntcodeProgram(memory.clone(), 12, 1)}")
 
-    val (noun, verb) = (0..99).flatMap { left -> (0..99).map { right -> Pair(left, right) } }
+    val (noun, verb) = (0..99)
+        .flatMap { left -> (0..99).map { right -> Pair(left, right) } }
         .first { (noun, verb) -> runIntcodeProgram(memory.clone(), noun, verb) == 19690720 }
     println("Task 2: ${100 * noun + verb}")
 }
