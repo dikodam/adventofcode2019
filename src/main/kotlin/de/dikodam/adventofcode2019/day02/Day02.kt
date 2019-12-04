@@ -1,5 +1,6 @@
 package de.dikodam.adventofcode2019.day02
 
+import de.dikodam.adventofcode2019.utils.printTiming
 import de.dikodam.adventofcode2019.utils.withTimer
 
 
@@ -11,12 +12,17 @@ import de.dikodam.adventofcode2019.utils.withTimer
 // start at index 0, execute command, increment index by 4
 
 fun main() {
-    val memory = day02input.split(",").map { it.toInt() }.toIntArray()
+    val (memory, setupDuration) = withTimer {
+        day02input
+            .split(",")
+            .map { it.toInt() }
+            .toIntArray()
+    }
 
     val (t1result, t1duration) = withTimer {
         runIntcodeProgram(memory.clone(), 12, 1)
     }
-    println("Task 1: ${t1result}ms. Time spent computing: ${t1duration}ms.")
+    println("Task 1: $t1result")
 
     val (t2result, t2duration) = withTimer {
         val (noun, verb) = (0..99)
@@ -26,7 +32,8 @@ fun main() {
         100 * noun + verb
     }
 
-    println("Task 2: ${t2result}ms. Time spent computing: ${t2duration}ms.")
+    println("Task 2: $t2result")
+    printTiming(setupDuration, t1duration, t2duration)
 }
 
 fun runIntcodeProgram(memory: IntArray, noun: Int, verb: Int): Int {
