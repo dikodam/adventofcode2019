@@ -1,5 +1,7 @@
 package de.dikodam.adventofcode2019.day02
 
+import de.dikodam.adventofcode2019.utils.withTimer
+
 
 // OPcode 1 a b c: take values from index a and b, add them, store at index 'value of index c'
 // OPcode 2 a b c: take values from index a and b, multiply them, store at index 'value of index c'
@@ -11,12 +13,20 @@ package de.dikodam.adventofcode2019.day02
 fun main() {
     val memory = day02input.split(",").map { it.toInt() }.toIntArray()
 
-    println("Task 1: ${runIntcodeProgram(memory.clone(), 12, 1)}")
+    val (t1result, t1duration) = withTimer {
+        runIntcodeProgram(memory.clone(), 12, 1)
+    }
+    println("Task 1: ${t1result}ms. Time spent computing: ${t1duration}ms.")
 
-    val (noun, verb) = (0..99)
-        .flatMap { left -> (0..99).map { right -> Pair(left, right) } }
-        .first { (noun, verb) -> runIntcodeProgram(memory.clone(), noun, verb) == 19690720 }
-    println("Task 2: ${100 * noun + verb}")
+    val (t2result, t2duration) = withTimer {
+        val (noun, verb) = (0..99)
+            .flatMap { left -> (0..99).map { right -> Pair(left, right) } }
+            .first { (noun, verb) -> runIntcodeProgram(memory.clone(), noun, verb) == 19690720 }
+
+        100 * noun + verb
+    }
+
+    println("Task 2: ${t2result}ms. Time spent computing: ${t2duration}ms.")
 }
 
 fun runIntcodeProgram(memory: IntArray, noun: Int, verb: Int): Int {

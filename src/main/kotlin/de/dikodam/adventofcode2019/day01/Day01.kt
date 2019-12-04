@@ -1,21 +1,26 @@
 package de.dikodam.adventofcode2019.day01
 
+import de.dikodam.adventofcode2019.utils.withTimer
+
 fun main() {
     val preppedInput = day01input
         .map { it.toInt() }
 
+    val (task1fuel, t1duration) = withTimer {
+        preppedInput
+            .map { computeFuelForMass(it) }
+            .sum()
+    }
 
-    val task1fuel = preppedInput
-        .map { computeFuelForMass(it) }
-        .sum()
+    val (task2fuel, t2duration) = withTimer {
+        preppedInput
+            .map { computeFuelForMass(it) }
+            .map { it + computeFuelForFuel(it) }
+            .sum()
+    }
 
-    val task2fuel = preppedInput
-        .map { computeFuelForMass(it) }
-        .map { it + computeFuelForFuel(it) }
-        .sum()
-
-    println("Task 1 fuel: $task1fuel")
-    println("Task 2 fuel: $task2fuel")
+    println("Task 1 fuel: $task1fuel. Time spent computing: ${t1duration}ms.")
+    println("Task 2 fuel: $task2fuel. Time spent computing: ${t2duration}ms.")
 }
 
 fun computeFuelForMass(mass: Int): Int = mass / 3 - 2
