@@ -19,10 +19,6 @@ fun main() {
     val (t2ValidPasswordCount, t2duration) = withTimer {
         passwordRange
             .filter { it.hasOnlyRisingDigits() }
-            .map { it to it.hasExactly2DuplicateDigits() }
-            .forEach(::println)
-        passwordRange
-            .filter { it.hasOnlyRisingDigits() }
             .filter { it.hasExactly2DuplicateDigits() }
             .count()
     }
