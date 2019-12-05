@@ -28,7 +28,7 @@ fun main() {
     printTiming(setupDuration, t1duration, t2duration)
 }
 
-fun Int.hasAdjacentDuplicateDigits(): Boolean {
+private fun Int.hasAdjacentDuplicateDigits(): Boolean {
     val digits = this.toString()
     return digits
         .dropLast(1)
@@ -36,7 +36,7 @@ fun Int.hasAdjacentDuplicateDigits(): Boolean {
         .any { (char, nextChar) -> char == nextChar }
 }
 
-fun Int.hasOnlyRisingDigits(): Boolean {
+private fun Int.hasOnlyRisingDigits(): Boolean {
     val digits = this.toString()
     return digits
         .dropLast(1)
@@ -44,7 +44,7 @@ fun Int.hasOnlyRisingDigits(): Boolean {
         .all { (char, nextChar) -> char <= nextChar }
 }
 
-fun Int.hasExactly2DuplicateDigits(): Boolean {
+private fun Int.hasExactly2DuplicateDigits(): Boolean {
     val digits = this.toString()
     // case 1: 1123456 - exactly 2 matching at start
     if (digits[0] == digits[1] && digits[0] != digits[2]) {
@@ -64,15 +64,4 @@ fun Int.hasExactly2DuplicateDigits(): Boolean {
     return false
 }
 
-const val day04input = "372304-847060"
-
-
-// testdata:
-// 377799, true
-// 444488, true
-// 444489, false
-// 112233, true
-// 123444, false
-// 111234, false
-
-
+private const val day04input = "372304-847060"

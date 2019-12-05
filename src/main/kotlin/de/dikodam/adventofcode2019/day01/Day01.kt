@@ -27,14 +27,14 @@ fun main() {
     printTiming(setupDuration, t1duration, t2duration)
 }
 
-fun computeFuelForMass(mass: Int): Int = mass / 3 - 2
+private fun computeFuelForMass(mass: Int): Int = mass / 3 - 2
 
-fun computeFuelForFuel(fuelmass: Int): Int {
+private fun computeFuelForFuel(fuelmass: Int): Int {
     val newFuel = computeFuelForMass(fuelmass)
     return if (newFuel > 0) newFuel + computeFuelForFuel(newFuel) else 0
 }
 
-val day01input: List<String> =
+private val day01input: List<String> =
     """147129
 128896
 86366
