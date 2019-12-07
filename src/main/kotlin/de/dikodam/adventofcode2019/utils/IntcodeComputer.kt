@@ -4,44 +4,17 @@ import de.dikodam.adventofcode2019.utils.IntcodeComputer.OpCode.*
 import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.IMMEDIATE
 import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.POSITION
 
-class IntcodeComputer(private var memory: IntArray, private val input: Int) {
+class IntcodeComputer(private var initialMemory: IntArray) {
 
-    fun run(): List<Int> {
+    fun run(input: Int): List<Int> {
+        var memory = initialMemory.clone()
         var ip = 0      // instruction pointer
-        var terminated = false
         var output = mutableListOf<Int>()
 
-        while (!terminated) {
+        while (true) {
             val instruction = parseInstruction(memory, ip)
-
-            val param = { i: Int -> memory[ip + i] }
-
-            when (instruction.opcode) {
-                ADD -> {
-                    val p1 = if (instruction.modes[0] == IMMEDIATE) param(1) else memory[param(1)]
-                    val p2 = if (instruction.modes[1] == IMMEDIATE) param(2) else memory[param(2)]
-                    memory[param(3)] = p1 + p2
-                }
-                MULT -> {
-                    val p1 = if (instruction.modes[0] == IMMEDIATE) param(1) else memory[param(1)]
-                    val p2 = if (instruction.modes[1] == IMMEDIATE) param(2) else memory[param(2)]
-                    memory[param(3)] = p1 * p2
-                }
-                IN -> {
-                    val p1 = param(1)
-                    memory[p1] = input
-                }
-                OUT -> {
-                    if (instruction.modes[0] == IMMEDIATE) output.add(param(1)) else output.add(memory[param(1)])
-                }
-                END -> {
-                    terminated = true
-                }
-            }
-
-            ip += instruction.opcode.length
+            ip = instruction(memory, ip, input, output) ?: return output
         }
-        return output
     }
 
     // instruction format: ABCDE: DE - opcode, A, B, C - modes of 3rd, 2nd, 1st params
@@ -85,7 +58,40 @@ class IntcodeComputer(private var memory: IntArray, private val input: Int) {
         }
 
     private data class Instruction(val opcode: OpCode, val modes: List<ParameterMode>) {
-        // TODO operator invoke returning new ip (and new memory?)
+        operator fun invoke(
+            memory: IntArray,
+            ip: Int,
+            input: Int,
+            output: MutableList<Int>
+        ): Int? {
+            fun getParam(i: Int) = if (modes[i - 1] == IMMEDIATE) memory[ip + i] else memory[memory[ip + i]]
+            return when (opcode) {
+                ADD -> {
+                    val p1 = getParam(1)
+                    val p2 = getParam(2)
+                    val p3 = memory[ip + 3]
+                    memory[p3] = p1 + p2
+                    ip + opcode.length
+                }
+                MULT -> {
+                    val p1 = getParam(1)
+                    val p2 = getParam(2)
+                    val p3 = memory[ip + 3]
+                    memory[p3] = p1 * p2
+                    ip + opcode.length
+                }
+                IN -> {
+                    val p1 = memory[ip + 1]
+                    memory[p1] = input
+                    ip + opcode.length
+                }
+                OUT -> {
+                    val p1 = getParam(1)
+                    output.add(p1)
+                    ip + opcode.length
+                }
+                END -> null
+            }
+        }
     }
-
 }
