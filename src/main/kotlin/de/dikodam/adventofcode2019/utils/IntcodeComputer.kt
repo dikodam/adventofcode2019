@@ -13,6 +13,7 @@ class IntcodeComputer(private var initialMemory: IntArray) {
 
         while (true) {
             val instruction = parseInstruction(memory, ip)
+            // println("evaluating expression ${instruction.opcode}${instruction.modes.take(2)} at $ip")
             ip = instruction(memory, ip, input, output) ?: return output
         }
     }
@@ -33,13 +34,27 @@ class IntcodeComputer(private var initialMemory: IntArray) {
         return Instruction((instructionCode % 100).toOpCode(), modes)
     }
 
-    private enum class OpCode(val length: Int) { ADD(4), MULT(4), IN(2), OUT(2), END(1) }
+    private enum class OpCode(val length: Int) {
+        ADD(4),
+        MULT(4),
+        IN(2),
+        OUT(2),
+        JIT(3),
+        JIF(3),
+        LT(4),
+        EQ(4),
+        END(1)
+    }
 
     private fun Int.toOpCode(): OpCode = when (this) {
         1 -> ADD
         2 -> MULT
         3 -> IN
         4 -> OUT
+        5 -> JIT
+        6 -> JIF
+        7 -> LT
+        8 -> EQ
         99 -> END
         else -> error("invalid opcode: $this")
     }
@@ -88,6 +103,16 @@ class IntcodeComputer(private var initialMemory: IntArray) {
                 OUT -> {
                     val p1 = getParam(1)
                     output.add(p1)
+                    ip + opcode.length
+                }
+                JIT -> if (getParam(1) != 0) getParam(2) else ip + opcode.length
+                JIF -> if (getParam(1) == 0) getParam(2) else ip + opcode.length
+                LT -> {
+                    memory[ip + 3] = if (getParam(1) < getParam(2)) 1 else 0
+                    ip + opcode.length
+                }
+                EQ -> {
+                    memory[ip + 3] = if (getParam(1) == getParam(2)) 1 else 0
                     ip + opcode.length
                 }
                 END -> null
