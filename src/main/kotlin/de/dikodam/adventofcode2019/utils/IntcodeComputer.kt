@@ -15,19 +15,16 @@ class IntcodeComputer(private var memory: IntArray, private val input: Int) {
             val instruction = parseInstruction(memory, ip)
 
             val param = { i: Int -> memory[ip + i] }
-            // TODO mode()
-
-            // TODO resolveParam(1) - mode dependent
 
             when (instruction.opcode) {
                 ADD -> {
-                    val p1 = if (instruction.modeFirst == IMMEDIATE) param(1) else memory[param(1)]
-                    val p2 = if (instruction.modeSecond == IMMEDIATE) param(2) else memory[param(2)]
+                    val p1 = if (instruction.modes[0] == IMMEDIATE) param(1) else memory[param(1)]
+                    val p2 = if (instruction.modes[1] == IMMEDIATE) param(2) else memory[param(2)]
                     memory[param(3)] = p1 + p2
                 }
                 MULT -> {
-                    val p1 = if (instruction.modeFirst == IMMEDIATE) param(1) else memory[param(1)]
-                    val p2 = if (instruction.modeSecond == IMMEDIATE) param(2) else memory[param(2)]
+                    val p1 = if (instruction.modes[0] == IMMEDIATE) param(1) else memory[param(1)]
+                    val p2 = if (instruction.modes[1] == IMMEDIATE) param(2) else memory[param(2)]
                     memory[param(3)] = p1 * p2
                 }
                 IN -> {
@@ -35,7 +32,7 @@ class IntcodeComputer(private var memory: IntArray, private val input: Int) {
                     memory[p1] = input
                 }
                 OUT -> {
-                    if (instruction.modeFirst == IMMEDIATE) output.add(param(1)) else output.add(memory[param(1)])
+                    if (instruction.modes[0] == IMMEDIATE) output.add(param(1)) else output.add(memory[param(1)])
                 }
                 END -> {
                     terminated = true
@@ -52,12 +49,15 @@ class IntcodeComputer(private var memory: IntArray, private val input: Int) {
     // leading 0s ignored!
     private fun parseInstruction(memory: IntArray, ip: Int): Instruction {
         val instructionCode = memory[ip]
-        return Instruction(
-            (instructionCode % 100).toOpCode(),
-            modeFirst = (instructionCode / 100 % 10).toParameterMode(),
-            modeSecond = (instructionCode / 1000 % 10).toParameterMode(),
-            modeThird = (instructionCode / 10000 % 10).toParameterMode()
-        )
+
+        val modes = instructionCode.toString()
+            .padStart(5, '0')
+            .take(3)
+            .reversed()
+            .chunked(1)
+            .map { it.toParameterMode() }
+
+        return Instruction((instructionCode % 100).toOpCode(), modes)
     }
 
     private enum class OpCode(val length: Int) { ADD(4), MULT(4), IN(2), OUT(2), END(1) }
@@ -77,19 +77,15 @@ class IntcodeComputer(private var memory: IntArray, private val input: Int) {
         POSITION, IMMEDIATE
     }
 
-    private fun Int.toParameterMode(): ParameterMode =
+    private fun String.toParameterMode(): ParameterMode =
         when (this) {
-            0 -> POSITION
-            1 -> IMMEDIATE
+            "0" -> POSITION
+            "1" -> IMMEDIATE
             else -> error("invalid parameter mode: $this")
         }
 
-    private data class Instruction(
-        val opcode: OpCode,
-        // TODO val modes: List<Int>
-        val modeFirst: ParameterMode = POSITION,
-        val modeSecond: ParameterMode = POSITION,
-        val modeThird: ParameterMode = POSITION
-    )
+    private data class Instruction(val opcode: OpCode, val modes: List<ParameterMode>) {
+        // TODO operator invoke returning new ip (and new memory?)
+    }
 
 }
