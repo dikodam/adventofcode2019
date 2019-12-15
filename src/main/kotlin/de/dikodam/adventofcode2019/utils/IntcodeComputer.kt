@@ -2,7 +2,6 @@ package de.dikodam.adventofcode2019.utils
 
 import de.dikodam.adventofcode2019.utils.IntcodeComputer.OpCode.*
 import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.IMMEDIATE
-import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.POSITION
 
 class IntcodeComputer(private val memory: IntArray) {
 
@@ -17,9 +16,6 @@ class IntcodeComputer(private val memory: IntArray) {
         }
     }
 
-    // instruction format: ABCDE: DE - opcode, A, B, C - modes of 3rd, 2nd, 1st params
-    // A should always be 0!
-    // leading 0s ignored!
     private fun parseInstruction(memory: IntArray, ip: Int): Instruction {
         val instructionCode = memory[ip]
 
@@ -28,9 +24,9 @@ class IntcodeComputer(private val memory: IntArray) {
             .take(3)
             .reversed()
             .chunked(1)
-            .map { it.toParameterMode() }
+            .map { ParameterMode.parse(it.toInt()) }
 
-        return Instruction((instructionCode % 100).toOpCode(), modes)
+        return Instruction(OpCode.parse(instructionCode % 100), modes)
     }
 
     private enum class OpCode(val length: Int) {
@@ -42,36 +38,41 @@ class IntcodeComputer(private val memory: IntArray) {
         JIF(3),
         LT(4),
         EQ(4),
-        END(1)
-    }
+        END(1);
 
-    private fun Int.toOpCode(): OpCode = when (this) {
-        1 -> ADD
-        2 -> MULT
-        3 -> IN
-        4 -> OUT
-        5 -> JIT
-        6 -> JIF
-        7 -> LT
-        8 -> EQ
-        99 -> END
-        else -> error("invalid opcode: $this")
+        companion object {
+            fun parse(code: Int) = when (code) {
+                1 -> ADD
+                2 -> MULT
+                3 -> IN
+                4 -> OUT
+                5 -> JIT
+                6 -> JIF
+                7 -> LT
+                8 -> EQ
+                99 -> END
+                else -> error("invalid opcode: $this")
+            }
+        }
     }
 
     // 0 is POSITION, 1 is IMMEDIATE
     private enum class ParameterMode {
 
-        POSITION, IMMEDIATE
+        POSITION, IMMEDIATE;
+
+        companion object {
+            fun parse(code: Int) = when (code) {
+                0 -> POSITION
+                1 -> IMMEDIATE
+                else -> error("invalid parameter mode: $this")
+            }
+
+        }
     }
 
-    private fun String.toParameterMode(): ParameterMode =
-        when (this) {
-            "0" -> POSITION
-            "1" -> IMMEDIATE
-            else -> error("invalid parameter mode: $this")
-        }
-
     private data class Instruction(val opcode: OpCode, val modes: List<ParameterMode>) {
+
         operator fun invoke(
             memory: IntArray,
             ip: Int,
@@ -107,11 +108,17 @@ class IntcodeComputer(private val memory: IntArray) {
                 JIT -> if (getParam(1) != 0) getParam(2) else ip + opcode.length
                 JIF -> if (getParam(1) == 0) getParam(2) else ip + opcode.length
                 LT -> {
-                    memory[ip + 3] = if (getParam(1) < getParam(2)) 1 else 0
+                    val p1 = getParam(1)
+                    val p2 = getParam(2)
+                    val p3 = memory[ip + 3]
+                    memory[p3] = if (p1 < p2) 1 else 0
                     ip + opcode.length
                 }
                 EQ -> {
-                    memory[ip + 3] = if (getParam(1) == getParam(2)) 1 else 0
+                    val p1 = getParam(1)
+                    val p2 = getParam(2)
+                    val p3 = memory[ip + 3]
+                    memory[p3] = if (p1 == p2) 1 else 0
                     ip + opcode.length
                 }
                 END -> null
