@@ -22,10 +22,14 @@ fun lcm(a: Long, b: Long): Long {
 fun <T, R> compareEqualsBy(firstList: List<T>, secondList: List<T>, selector: (T) -> R) =
     firstList.map(selector) == secondList.map(selector)
 
-fun printTiming(
-    setupDuration: Long = -1,
-    t1duration: Long = -1,
-    t2duration: Long = -1
-) = println("Preparation time: ${setupDuration}ms. Task 1 duration: ${t1duration}ms. Task 2 duration: ${t2duration}ms.")
+data class TimingData(
+    private val setupDuration: Long = -1,
+    private val t1duration: Long = -1,
+    private val t2duration: Long = -1
+) {
+
+    fun print() =
+        println("Preparation time: ${setupDuration}ms. Task 1 duration: ${t1duration}ms. Task 2 duration: ${t2duration}ms.")
+}
 
 

@@ -1,44 +1,44 @@
 package de.dikodam.adventofcode2019.day12
 
-import de.dikodam.adventofcode2019.utils.compareEqualsBy
-import de.dikodam.adventofcode2019.utils.lcm
+import de.dikodam.adventofcode2019.utils.*
 import kotlin.math.abs
 
 fun main() {
-    val moonsInput = day12input.split("\n")
-        .map { it.drop(1).dropLast(1) }
-        .map { line -> inputlineToCoordinates(line) }
-        .map { coords ->
-            Moon(
-                pos = Vector3D(coords.first, coords.second, coords.third),
-                vel = Vector3D(0, 0, 0)
-            )
-        }
+    val (moonsInput, setupDuration) = withTimer {
+        day12input.split("\n")
+            .map { it.drop(1).dropLast(1) }
+            .map { line -> inputlineToCoordinates(line) }
+            .map { coords ->
+                Moon(
+                    pos = Vector3D(coords.first, coords.second, coords.third),
+                    vel = Vector3D(0, 0, 0)
+                )
+            }
+    }
 
     // TASK 1
-
-    var moons = moonsInput
-//    printSystemState(0, moons)
-    repeat(1000) {
-        //        i ->
-        moons = completeTimeStep(moons)
-//        printSystemState(i + 1, moons)
+    val (totalSystemEnergy, t1duration) = withTimer {
+        var moons = moonsInput
+        repeat(1000) {
+            moons = completeTimeStep(moons)
+        }
+        moons.map(Moon::energy).sum()
     }
-    val totalSystemEnergy = moons.map { it.energy() }.sum()
     println("Task 1: total energy is $totalSystemEnergy")
 
     // TASK 2
 
     // determine cycle count for each coordinate dimension independently
     // determine least common multiple of all three
+    val (cycleLength, t2duration) = withTimer {
+        val xCycleLength = moonsInput.determineCycleLengthBy { moon -> Pair(moon.pos.x, moon.vel.x) }
+        val yCycleLength = moonsInput.determineCycleLengthBy { moon -> Pair(moon.pos.y, moon.vel.y) }
+        val zCycleLength = moonsInput.determineCycleLengthBy { moon -> Pair(moon.pos.z, moon.vel.z) }
+        lcm(xCycleLength, lcm(yCycleLength, zCycleLength))
+    }
 
-    val xCycleLength = moons.determineCycleLengthBy { moon -> Pair(moon.pos.x, moon.vel.x) }
-    val yCycleLength = moons.determineCycleLengthBy { moon -> Pair(moon.pos.y, moon.vel.y) }
-    val zCycleLength = moons.determineCycleLengthBy { moon -> Pair(moon.pos.z, moon.vel.z) }
-
-    val cycleLength = lcm(xCycleLength, lcm(yCycleLength, zCycleLength))
-
-    println("Task 2: Cycle length is $cycleLength")
+    println("Task 2: Cycle length is $cycleLength (duration: $t2duration)")
+    TimingData(setupDuration, t1duration, t2duration).print()
 }
 
 private fun <T> List<Moon>.determineCycleLengthBy(selector: (Moon) -> T): Long {
@@ -87,12 +87,12 @@ data class Moon(val pos: Vector3D, val vel: Vector3D) {
         return this.copy(vel = vel + totalGravity)
     }
 
-    fun potentialEnergy(): Int {
+    private fun potentialEnergy(): Int {
         val (px, py, pz) = pos
         return abs(px) + abs(py) + abs(pz)
     }
 
-    fun kineticEnergy(): Int {
+    private fun kineticEnergy(): Int {
         val (vx, vy, vz) = vel
         return abs(vx) + abs(vy) + abs(vz)
     }
@@ -118,16 +118,6 @@ private fun computeGravity(v1: Int, v2: Int): Int =
         }
         else -> 1
     }
-
-fun printSystemState(step: Int, moons: Collection<Moon>) {
-    println("After $step steps:")
-    moons.forEach(::println)
-}
-
-const val testInput = """<x=-1, y=0, z=2>
-<x=2, y=-10, z=-7>
-<x=4, y=-8, z=8>
-<x=3, y=5, z=-1>"""
 
 const val day12input =
     """<x=-14, y=-4, z=-11>

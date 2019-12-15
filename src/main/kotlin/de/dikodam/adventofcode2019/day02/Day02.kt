@@ -1,6 +1,6 @@
 package de.dikodam.adventofcode2019.day02
 
-import de.dikodam.adventofcode2019.utils.printTiming
+import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.withTimer
 
 
@@ -33,7 +33,7 @@ fun main() {
     }
 
     println("Task 2: $t2result")
-    printTiming(setupDuration, t1duration, t2duration)
+    TimingData(setupDuration, t1duration, t2duration).print()
 }
 
 private fun runIntcodeProgram(memory: IntArray, noun: Int, verb: Int): Int {

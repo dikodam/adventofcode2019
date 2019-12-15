@@ -1,7 +1,7 @@
 package de.dikodam.adventofcode2019.day05
 
 import de.dikodam.adventofcode2019.utils.IntcodeComputer
-import de.dikodam.adventofcode2019.utils.printTiming
+import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.withTimer
 
 fun main() {
@@ -21,7 +21,7 @@ fun main() {
 
     println("Task 2 diagnostic code: ${t2result.last()}") // 15110804
 
-    printTiming(setupDuration, t1duration, t2duration)
+    TimingData(setupDuration, t1duration, t2duration).print()
 }
 
 private val day05input =

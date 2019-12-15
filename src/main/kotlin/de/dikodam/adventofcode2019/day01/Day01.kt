@@ -1,6 +1,6 @@
 package de.dikodam.adventofcode2019.day01
 
-import de.dikodam.adventofcode2019.utils.printTiming
+import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.withTimer
 
 fun main() {
@@ -24,7 +24,7 @@ fun main() {
 
     println("Task 1 fuel: $task1fuel.")
     println("Task 2 fuel: $task2fuel.")
-    printTiming(setupDuration, t1duration, t2duration)
+    TimingData(setupDuration, t1duration, t2duration).print()
 }
 
 private fun computeFuelForMass(mass: Int): Int = mass / 3 - 2

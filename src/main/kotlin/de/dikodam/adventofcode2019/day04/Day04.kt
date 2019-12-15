@@ -1,6 +1,6 @@
 package de.dikodam.adventofcode2019.day04
 
-import de.dikodam.adventofcode2019.utils.printTiming
+import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.withTimer
 
 fun main() {
@@ -25,7 +25,7 @@ fun main() {
 
     println("Task 1: There are $t1ValidPasswordCount valid passwords in the range $passwordRange.")
     println("Task 2: There are $t2ValidPasswordCount valid passwords in the range $passwordRange.")
-    printTiming(setupDuration, t1duration, t2duration)
+    TimingData(setupDuration, t1duration, t2duration).print()
 }
 
 private fun Int.hasAdjacentDuplicateDigits(): Boolean {

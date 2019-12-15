@@ -1,7 +1,7 @@
 package de.dikodam.adventofcode2019.day03
 
+import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.manhattanDistance
-import de.dikodam.adventofcode2019.utils.printTiming
 import de.dikodam.adventofcode2019.utils.withTimer
 
 fun main() {
@@ -33,7 +33,7 @@ fun main() {
     println("Task 1: The manhattan distance of the intersection closest to the central port is $distanceTask1")
     println("Task 2: $t2solution combined steps")
 
-    printTiming(setupDuration, t1duration, t2duration)
+    TimingData(setupDuration, t1duration, t2duration).print()
 
 }
 
