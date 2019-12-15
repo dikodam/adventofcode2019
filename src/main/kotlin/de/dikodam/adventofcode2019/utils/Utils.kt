@@ -1,7 +1,6 @@
 package de.dikodam.adventofcode2019.utils
 
 import kotlin.math.abs
-import kotlin.math.min
 
 fun <T> withTimer(block: () -> T): Pair<T, Long> {
     val start = System.currentTimeMillis()
@@ -14,13 +13,10 @@ fun manhattanDistance(x: Int, y: Int) = abs(x) + abs(y)
 
 // noob impl because I'm too lazy to think
 fun lcm(a: Long, b: Long): Long {
-    val multipleOfA = generateSequence(a) { it + a }
-        .filter { it % b == 0L }
+    val (smaller, bigger) = if (a < b) a to b else b to a
+    return generateSequence(smaller) { it + smaller }
+        .filter { it % bigger == 0L }
         .first()
-    val multipleOfB = generateSequence(b) { it + b }
-        .filter { it % a == 0L }
-        .first()
-    return min(multipleOfA, multipleOfB)
 }
 
 fun <T, R> compareEqualsBy(firstList: List<T>, secondList: List<T>, selector: (T) -> R) =
