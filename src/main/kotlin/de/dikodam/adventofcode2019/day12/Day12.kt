@@ -1,33 +1,63 @@
 package de.dikodam.adventofcode2019.day12
 
+import de.dikodam.adventofcode2019.utils.compareEqualsBy
+import de.dikodam.adventofcode2019.utils.lcm
+import kotlin.math.abs
+
 fun main() {
-    val moons = day12input.split("\n")
+    val moonsInput = day12input.split("\n")
         .map { it.drop(1).dropLast(1) }
-        .map { line -> lineToCoordinates(line) }
+        .map { line -> inputlineToCoordinates(line) }
         .map { coords ->
             Moon(
-                position = Vector3D(coords.first, coords.second, coords.third),
-                velocity = Vector3D(0, 0, 0)
+                pos = Vector3D(coords.first, coords.second, coords.third),
+                vel = Vector3D(0, 0, 0)
             )
         }
 
+    // TASK 1
 
-    // val otherMoons = get All Moons Except Self
-    //    ALTERNATIVE: make Pair of this moon with every other moon
-    // fore each pair of this moon and other moons, compute gravitationalPull : Vector3D
-    // add gravitationalPull to this moon's velocity
-    // add velocity to position
-    val moon = Moon(Vector3D(0, 0, 0), Vector3D(0, 0, 0))
-    val newVelocity = Vector3D(1, 2, 3)
-    moon.copy(velocity = newVelocity)
+    var moons = moonsInput
+//    printSystemState(0, moons)
+    repeat(1000) {
+        //        i ->
+        moons = completeTimeStep(moons)
+//        printSystemState(i + 1, moons)
+    }
+    val totalSystemEnergy = moons.map { it.energy() }.sum()
+    println("Task 1: total energy is $totalSystemEnergy")
 
+    // TASK 2
 
-    // time++
+    // determine cycle count for each coordinate dimension independently
+    // determine least common multiple of all three
 
+    val xCycleLength = moons.determineCycleLengthBy { moon -> Pair(moon.pos.x, moon.vel.x) }
+    val yCycleLength = moons.determineCycleLengthBy { moon -> Pair(moon.pos.y, moon.vel.y) }
+    val zCycleLength = moons.determineCycleLengthBy { moon -> Pair(moon.pos.z, moon.vel.z) }
 
+    val cycleLength = lcm(xCycleLength, lcm(yCycleLength, zCycleLength))
+
+    println("Task 2: Cycle length is $cycleLength")
 }
 
-private fun lineToCoordinates(line: String): Triple<Int, Int, Int> {
+private fun <T> List<Moon>.determineCycleLengthBy(selector: (Moon) -> T): Long {
+    var newMoonState = this
+    var count = 0L
+    do {
+        newMoonState = completeTimeStep(newMoonState)
+        count++
+    } while (
+        !compareEqualsBy(newMoonState, this, selector)
+    )
+    return count
+}
+
+private fun completeTimeStep(moons: List<Moon>) =
+    moons.map { moon -> moon.applyGravity(moons) }
+        .map { moon -> moon.move() }
+
+private fun inputlineToCoordinates(line: String): Triple<Int, Int, Int> {
     val coords = line
         .split(",")
         .map { coordinate ->
@@ -43,13 +73,64 @@ data class Vector3D(val x: Int, val y: Int, val z: Int) {
         Vector3D(this.x + other.x, this.y + other.y, this.z + other.z)
 }
 
-data class Moon(val position: Vector3D, val velocity: Vector3D) {
-    fun move(): Moon = this.copy(position = position + velocity, velocity = velocity)
+data class Moon(val pos: Vector3D, val vel: Vector3D) {
+    fun move(): Moon = this.copy(pos = pos + vel, vel = vel)
+
+    fun applyGravity(moons: Collection<Moon>): Moon {
+        val totalGravity = moons.map { otherMoon ->
+            if (otherMoon == this) {
+                Vector3D(0, 0, 0)
+            } else {
+                computeGravity(this.pos, otherMoon.pos)
+            }
+        }.reduce(Vector3D::plus)
+        return this.copy(vel = vel + totalGravity)
+    }
+
+    fun potentialEnergy(): Int {
+        val (px, py, pz) = pos
+        return abs(px) + abs(py) + abs(pz)
+    }
+
+    fun kineticEnergy(): Int {
+        val (vx, vy, vz) = vel
+        return abs(vx) + abs(vy) + abs(vz)
+    }
+
+    fun energy(): Int = potentialEnergy() * kineticEnergy()
 
 }
 
+private fun computeGravity(v1: Vector3D, v2: Vector3D): Vector3D =
+    Vector3D(
+        computeGravity(v1.x, v2.x),
+        computeGravity(v1.y, v2.y),
+        computeGravity(v1.z, v2.z)
+    )
 
-const val day12input = """<x=-14, y=-4, z=-11>
+private fun computeGravity(v1: Int, v2: Int): Int =
+    when {
+        v1 > v2 -> {
+            -1
+        }
+        v1 == v2 -> {
+            0
+        }
+        else -> 1
+    }
+
+fun printSystemState(step: Int, moons: Collection<Moon>) {
+    println("After $step steps:")
+    moons.forEach(::println)
+}
+
+const val testInput = """<x=-1, y=0, z=2>
+<x=2, y=-10, z=-7>
+<x=4, y=-8, z=8>
+<x=3, y=5, z=-1>"""
+
+const val day12input =
+    """<x=-14, y=-4, z=-11>
 <x=-9, y=6, z=-7>
 <x=4, y=1, z=4>
-<x=2, y=-14, z=-9>""""
+<x=2, y=-14, z=-9>"""
