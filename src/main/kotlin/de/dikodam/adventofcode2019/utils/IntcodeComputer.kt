@@ -4,12 +4,11 @@ import de.dikodam.adventofcode2019.utils.IntcodeComputer.OpCode.*
 import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.IMMEDIATE
 import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.POSITION
 
-class IntcodeComputer(private var initialMemory: IntArray) {
+class IntcodeComputer(private val memory: IntArray) {
 
     fun run(input: Int): List<Int> {
-        var memory = initialMemory.clone()
         var ip = 0      // instruction pointer
-        var output = mutableListOf<Int>()
+        val output = mutableListOf<Int>()
 
         while (true) {
             val instruction = parseInstruction(memory, ip)
