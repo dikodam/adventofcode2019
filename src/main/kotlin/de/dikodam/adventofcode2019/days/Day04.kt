@@ -1,4 +1,4 @@
-package de.dikodam.adventofcode2019.day04
+package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.withTimer

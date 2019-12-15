@@ -1,4 +1,4 @@
-package de.dikodam.adventofcode2019.day03
+package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.manhattanDistance
@@ -26,7 +26,11 @@ fun main() {
 
     val (t2solution, t2duration) = withTimer {
         intersections
-            .map { intersection -> stepsNeededToReach(intersection, wire1) + stepsNeededToReach(intersection, wire2) }
+            .map { intersection -> stepsNeededToReach(
+                intersection,
+                wire1
+            ) + stepsNeededToReach(intersection, wire2)
+            }
             .min()
     }
 
@@ -40,7 +44,12 @@ fun main() {
 private data class Day03PathInstruction(val direction: Char, val count: Int)
 private data class Day03Coordinates(val x: Int, val y: Int)
 
-private fun List<String>.parseInstructions() = this.map { Day03PathInstruction(it[0], it.substring(1).toInt()) }
+private fun List<String>.parseInstructions() = this.map {
+    Day03PathInstruction(
+        it[0],
+        it.substring(1).toInt()
+    )
+}
 
 private fun List<Day03PathInstruction>.toCoordinates(): List<Day03Coordinates> {
     var current = Day03Coordinates(0, 0)

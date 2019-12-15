@@ -1,4 +1,4 @@
-package de.dikodam.adventofcode2019.day02
+package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.TimingData
 import de.dikodam.adventofcode2019.utils.withTimer
@@ -27,7 +27,11 @@ fun main() {
     val (t2result, t2duration) = withTimer {
         val (noun, verb) = (0..99)
             .flatMap { left -> (0..99).map { right -> Pair(left, right) } }
-            .first { (noun, verb) -> runIntcodeProgram(memory.clone(), noun, verb) == 19690720 }
+            .first { (noun, verb) -> runIntcodeProgram(
+                memory.clone(),
+                noun,
+                verb
+            ) == 19690720 }
 
         100 * noun + verb
     }

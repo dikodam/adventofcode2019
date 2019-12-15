@@ -1,4 +1,4 @@
-package de.dikodam.adventofcode2019.day12
+package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.*
 import kotlin.math.abs
@@ -10,7 +10,11 @@ fun main() {
             .map { line -> inputlineToCoordinates(line) }
             .map { coords ->
                 Moon(
-                    pos = Vector3D(coords.first, coords.second, coords.third),
+                    pos = Vector3D(
+                        coords.first,
+                        coords.second,
+                        coords.third
+                    ),
                     vel = Vector3D(0, 0, 0)
                 )
             }
@@ -70,7 +74,11 @@ private fun inputlineToCoordinates(line: String): Triple<Int, Int, Int> {
 
 data class Vector3D(val x: Int, val y: Int, val z: Int) {
     operator fun plus(other: Vector3D): Vector3D =
-        Vector3D(this.x + other.x, this.y + other.y, this.z + other.z)
+        Vector3D(
+            this.x + other.x,
+            this.y + other.y,
+            this.z + other.z
+        )
 }
 
 data class Moon(val pos: Vector3D, val vel: Vector3D) {

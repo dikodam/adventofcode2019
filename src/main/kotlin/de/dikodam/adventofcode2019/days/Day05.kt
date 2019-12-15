@@ -1,4 +1,4 @@
-package de.dikodam.adventofcode2019.day05
+package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.IntcodeComputer
 import de.dikodam.adventofcode2019.utils.TimingData
