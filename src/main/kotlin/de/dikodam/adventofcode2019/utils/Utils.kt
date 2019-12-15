@@ -19,8 +19,9 @@ fun lcm(a: Long, b: Long): Long {
         .first()
 }
 
-fun <T, R> compareEqualsBy(firstList: List<T>, secondList: List<T>, selector: (T) -> R) =
-    firstList.map(selector) == secondList.map(selector)
+fun <T, R> compareEqualsBy(firstList: List<T>, secondList: List<T>, transform: (T) -> R) =
+    firstList.map(transform) == secondList.map(transform)
+
 
 data class TimingData(
     private val setupDuration: Long = -1,
