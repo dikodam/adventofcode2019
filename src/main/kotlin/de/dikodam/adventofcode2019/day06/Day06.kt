@@ -39,7 +39,7 @@ fun main() {
 
     println(t2result)
 
-    TimingData(setupDuration, t1duration, t2duration)
+    TimingData(setupDuration, t1duration, t2duration).print()
 }
 
 data class Node(val name: String, var parent: Node? = null, val children: MutableList<Node> = mutableListOf()) {
