@@ -33,4 +33,5 @@ data class TimingData(
         println("Preparation time: ${setupDuration}ms. Task 1 duration: ${t1duration}ms. Task 2 duration: ${t2duration}ms.")
 }
 
-
+fun String.toIntCode(): IntArray =
+    this.split(",").map { it.toInt() }.toIntArray()

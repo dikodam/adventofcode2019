@@ -2,21 +2,22 @@ package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.IntcodeComputer
 import de.dikodam.adventofcode2019.utils.TimingData
+import de.dikodam.adventofcode2019.utils.toIntCode
 import de.dikodam.adventofcode2019.utils.withTimer
 
 fun main() {
     val (initialMemory, setupDuration) = withTimer {
-        day05input.split(",").map { it.toInt() }.toIntArray()
+        day05input.toIntCode()
     }
 
     val (t1result, t1duration) = withTimer {
-        IntcodeComputer(initialMemory.clone()).run(1)
+        IntcodeComputer(initialMemory.clone()).run(listOf(1))
     }
 
     println("Task 1 diagnostic code: ${t1result.last()}") // 13294380
 
     val (t2result, t2duration) = withTimer {
-        IntcodeComputer(initialMemory.clone()).run(5)
+        IntcodeComputer(initialMemory.clone()).run(listOf(5))
     }
 
     println("Task 2 diagnostic code: ${t2result.last()}") // 15110804

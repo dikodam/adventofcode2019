@@ -5,14 +5,18 @@ import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.IMMEDIATE
 
 class IntcodeComputer(private val memory: IntArray) {
 
-    fun run(input: Int): List<Int> {
+    fun run(input: List<Int>): List<Int> {
+
         var ip = 0      // instruction pointer
         val output = mutableListOf<Int>()
+
+        var inputIndex = 0
+        val inputReader = { input[inputIndex++] }
 
         while (true) {
             val instruction = parseInstruction(memory, ip)
             // println("evaluating expression ${instruction.opcode}${instruction.modes.take(2)} at $ip")
-            ip = instruction(memory, ip, input, output) ?: return output
+            ip = instruction(memory, ip, inputReader, output) ?: return output
         }
     }
 
@@ -76,7 +80,7 @@ class IntcodeComputer(private val memory: IntArray) {
         operator fun invoke(
             memory: IntArray,
             ip: Int,
-            input: Int,
+            input: () -> Int,
             output: MutableList<Int>
         ): Int? {
             fun getParam(i: Int) = if (modes[i - 1] == IMMEDIATE) memory[ip + i] else memory[memory[ip + i]]
@@ -97,7 +101,7 @@ class IntcodeComputer(private val memory: IntArray) {
                 }
                 IN -> {
                     val p1 = memory[ip + 1]
-                    memory[p1] = input
+                    memory[p1] = input()
                     ip + opcode.length
                 }
                 OUT -> {
