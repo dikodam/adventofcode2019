@@ -14,8 +14,8 @@ fun manhattanDistance(x: Int, y: Int) = abs(x) + abs(y)
 // noob impl because I'm too lazy to think
 fun lcm(a: Long, b: Long): Long {
     val (smaller, bigger) = if (a < b) a to b else b to a
-    return generateSequence(smaller) { it + smaller }
-        .filter { it % bigger == 0L }
+    return generateSequence(bigger) { it + bigger }
+        .filter { it % smaller == 0L }
         .first()
 }
 
