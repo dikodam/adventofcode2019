@@ -127,7 +127,7 @@ private fun computeGravity(v1: Int, v2: Int): Int =
         else -> 1
     }
 
-const val day12input =
+private const val day12input =
     """<x=-14, y=-4, z=-11>
 <x=-9, y=6, z=-7>
 <x=4, y=1, z=4>
