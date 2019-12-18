@@ -25,13 +25,9 @@ fun main() {
             previous
         }
 
-    finalCode.chunked(width)
-        .forEach { line ->
-            println(line
-                .map { char -> if (char == '1') "XX" else "  " }
-                .joinToString(separator = "")
-            )
-        }
+    finalCode
+        .chunked(width)
+        .forEach { line -> println(line.joinToString(separator = "") { char -> if (char == '1') "XX" else "  " })}
 
 }
 
