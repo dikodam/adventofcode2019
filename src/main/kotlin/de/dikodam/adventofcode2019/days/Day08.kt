@@ -7,14 +7,32 @@ fun main() {
 
     val width = 25
     val heigth = 6
+    val layerSize = width * heigth
 
-
-    val minimal0Layer = day08input.chunked(width * heigth)
+    val minimal0Layer = day08input.chunked(layerSize)
         .minBy { layer -> layer.count { char -> char == '0' } } ?: throw Exception("this shouldn't happen :>")
-
     val task1Result = minimal0Layer.count { char -> char == '1' } * minimal0Layer.count { char -> char == '2' }
+    println("Task 1: $task1Result")
 
-    println(task1Result)
+    val finalCode = day08input.chunked(layerSize)
+        .map { string -> string.toList() }
+        .fold("2".repeat(layerSize).toMutableList()) { previous, next ->
+            for (i in 0 until layerSize) {
+                if (previous[i] == '2') {
+                    previous[i] = next[i]
+                }
+            }
+            previous
+        }
+
+    finalCode.chunked(width)
+        .forEach { line ->
+            println(line
+                .map { char -> if (char == '1') 'X' else ' ' }
+                .joinToString(separator = "")
+            )
+        }
+
 }
 
 private const val day08input =
