@@ -5,17 +5,22 @@ import de.dikodam.adventofcode2019.utils.IntcodeComputer.ParameterMode.IMMEDIATE
 
 class IntcodeComputer(private val memory: IntArray) {
 
-    fun run(input: List<Int>): List<Int> {
+    fun run(input: MutableList<Int>, output: MutableList<Int> = mutableListOf()): List<Int> {
+        println("starting IC[${hashCode()}]")
 
         var ip = 0      // instruction pointer
-        val output = mutableListOf<Int>()
 
         var inputIndex = 0
-        val inputReader = { input[inputIndex++] }
+        val inputReader = {
+            while (inputIndex >= input.size) {
+                Thread.sleep(100)
+            }
+            input[inputIndex++]
+        }
 
         while (true) {
             val instruction = parseInstruction(memory, ip)
-            // println("evaluating expression ${instruction.opcode}${instruction.modes.take(2)} at $ip")
+//            println("IC[${hashCode()}] evaluating expression ${instruction.opcode}${instruction.modes.take(2)} at $ip")
             ip = instruction(memory, ip, inputReader, output) ?: return output
         }
     }

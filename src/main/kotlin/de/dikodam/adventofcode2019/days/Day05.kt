@@ -11,13 +11,13 @@ fun main() {
     }
 
     val (t1result, t1duration) = withTimer {
-        IntcodeComputer(initialMemory.clone()).run(listOf(1))
+        IntcodeComputer(initialMemory.clone()).run(mutableListOf(1))
     }
 
     println("Task 1 diagnostic code: ${t1result.last()}") // 13294380
 
     val (t2result, t2duration) = withTimer {
-        IntcodeComputer(initialMemory.clone()).run(listOf(5))
+        IntcodeComputer(initialMemory.clone()).run(mutableListOf(5))
     }
 
     println("Task 2 diagnostic code: ${t2result.last()}") // 15110804

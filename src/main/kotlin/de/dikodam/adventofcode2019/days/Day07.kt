@@ -1,27 +1,27 @@
 package de.dikodam.adventofcode2019.days
 
 import de.dikodam.adventofcode2019.utils.IntcodeComputer
-import de.dikodam.adventofcode2019.utils.permutate
 import de.dikodam.adventofcode2019.utils.toIntCode
+import java.util.concurrent.CompletableFuture
 
 fun main() {
-
-
     val intCode = day07input.toIntCode()
 
     // Task 1
-    val maxThrustSignal1 = (0..4).toSet()
-        .permutate()
-        .map { phaseSetting -> runAmplifiers(intCode, phaseSetting) }
-        .max()!!
+//    val maxThrustSignal1 = (0..4).toSet()
+//        .permutate()
+//        .map { phaseSetting -> runAmplifiers(intCode, phaseSetting) }
+//        .max()!!
 
-    println("Task 1: Phase setting for maximal thrust signal is $maxThrustSignal1")
+//    println("Task 1: Phase setting for maximal thrust signal is $maxThrustSignal1")
 
     // Task 2
-    val maxThrustSignal2 = (5..9).toSet()
-        .permutate()
-        .map { phaseSetting -> runAmplifiers(intCode, phaseSetting) }
-        .max()!!
+    val maxThrustSignal2 =
+//        (5..9).toSet()
+//        .permutate()
+        listOf(listOf(5, 6, 7, 8, 9))
+            .map { phaseSetting -> runAmplifiers(intCode, phaseSetting) }
+            .max()!!
 
     println("Task 2: Phase setting for maximal thrust signal is $maxThrustSignal2")
 
@@ -40,19 +40,26 @@ fun runAmplifiers(intCode: IntArray, phaseSequence: List<Int>): Int {
     val dInput = mutableListOf(phaseSequence[3])
     val eInput = mutableListOf(phaseSequence[4])
 
-    println("ampA is ${ampA.hashCode()}")
-    println("ampB is ${ampB.hashCode()}")
-    println("ampC is ${ampC.hashCode()}")
-    println("ampD is ${ampD.hashCode()}")
-    println("ampE is ${ampE.hashCode()}")
+//    println("ampA is ${ampA.hashCode()}")
+//    println("ampB is ${ampB.hashCode()}")
+//    println("ampC is ${ampC.hashCode()}")
+//    println("ampD is ${ampD.hashCode()}")
+//    println("ampE is ${ampE.hashCode()}")
 
-    Thread().run { ampA.run(input = aInput, output = bInput) }
-    Thread().run { ampB.run(input = bInput, output = cInput) }
-    Thread().run { ampC.run(input = cInput, output = dInput) }
-    Thread().run { ampD.run(input = dInput, output = eInput) }
-    Thread().run { ampE.run(input = eInput, output = aInput) }
+    // TODO IO als Deque o.ä.?
 
-    return aInput.last()
+    val c1 = CompletableFuture.supplyAsync { ampA.run(input = aInput, output = bInput) }
+        .thenRunAsync { ampB.run(input = bInput, output = cInput) }
+        .thenRunAsync { ampC.run(input = cInput, output = dInput) }
+        .thenRunAsync { ampD.run(input = dInput, output = eInput) }
+        .thenRun { ampE.run(input = eInput, output = aInput) }
+
+    while (!c1.isDone) {
+        Thread.sleep(100)
+    }
+    val result = aInput.last()
+    println("thrust calculated: $result")
+    return result
 }
 
 
