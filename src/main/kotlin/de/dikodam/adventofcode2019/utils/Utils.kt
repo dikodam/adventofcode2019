@@ -35,3 +35,11 @@ data class TimingData(
 
 fun String.toIntCode(): IntArray =
     this.split(",").map { it.toInt() }.toIntArray()
+
+
+fun <T> Set<T>.permutate(vararg literals: T): List<List<T>> {
+    return if (this.isEmpty())
+        listOf(literals.toList())
+    else
+        this.flatMap { literal -> this.minus(literal).permutate(*literals, literal) }
+}
