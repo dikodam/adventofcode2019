@@ -46,7 +46,9 @@ fun runAmplifiers(intCode: IntArray, phaseSequence: List<Int>): Int {
 //    println("ampD is ${ampD.hashCode()}")
 //    println("ampE is ${ampE.hashCode()}")
 
-    // TODO IO als Deque o.ä.?
+    // pause at OUT, current state {PAUSED, TERMINATED} as public readonly variable
+
+
 
     val c1 = CompletableFuture.supplyAsync { ampA.run(input = aInput, output = bInput) }
         .thenRunAsync { ampB.run(input = bInput, output = cInput) }
