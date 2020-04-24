@@ -43,3 +43,8 @@ fun <T> Set<T>.permutate(vararg literals: T): List<List<T>> {
     else
         this.flatMap { literal -> this.minus(literal).permutate(*literals, literal) }
 }
+
+fun <T : Any> applyRepeatedly(times: Int, seed: T, nextFunction: (T) -> T): T =
+    generateSequence(seed, nextFunction)
+        .take(times + 1)
+        .last()
