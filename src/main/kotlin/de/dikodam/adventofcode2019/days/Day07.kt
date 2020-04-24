@@ -46,7 +46,10 @@ fun runAmplifiers(intCode: IntArray, phaseSequence: List<Int>): Int {
 //    println("ampD is ${ampD.hashCode()}")
 //    println("ampE is ${ampE.hashCode()}")
 
-    // pause at OUT, current state {PAUSED, TERMINATED} as public readonly variable
+    // pause at OUT, current state {INITIALISED, RUNNING, PAUSED, TERMINATED} as public readonly variable
+    // when RUNNING reaching an OUT, goes into PAUSED
+    // when PAUSED, can be resume()-ed until next OUT
+    // -> needs some sort of breaking mechanism after the out, maybe a keepRunning flag (or change the state?)
 
 
 
